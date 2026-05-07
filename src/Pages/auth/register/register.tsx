@@ -1,41 +1,50 @@
+import { useMutation } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod/v4";
-import { useMutation } from "@tanstack/react-query";
-import { FiAlertCircle, FiCheck, FiEye, FiEyeOff, FiLoader } from "react-icons/fi";
-import type { CredentialType } from "../../types";
-import { AuthLogin } from "../../http/api";
-import { getRequestErrorMessage, loginSchema } from "../../validation/auth";
-import useMainStore from "../../store/MainStore";
+import {
+  FiAlertCircle,
+  FiCheck,
+  FiEye,
+  FiEyeOff,
+  FiLoader,
+} from "react-icons/fi";
+import type { CredentialType } from "../../../types";
+import { AuthRegister } from "../../../http/api";
+import { getRequestErrorMessage, registerSchema } from "../../../validation/auth";
 
-function LoginPage() {
+function RegisterPage() {
   const [formData, setFormData] = useState({
+    fullname: "",
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const {fetchUserItself, user} = useMainStore()
 
-  const login = async (data: CredentialType) => {
-    return AuthLogin(data);
+  const register = async (data: CredentialType) => {
+    return AuthRegister(data);
   };
-  const { mutate, isPending, isSuccess, isError, error, reset, data } =
+  const { mutate, data, isPending, isSuccess, isError, error, reset } =
     useMutation({
-    mutationKey: ["login"],
-    mutationFn: login,
+    mutationKey: ["register"],
+    mutationFn: register,
     onSuccess: () => {
+      setFormData({
+        email: "",
+        fullname: "",
+        password: "",
+      });
       setShowPassword(false);
-      fetchUserItself()
     },
   });
 
   const [form, fields] = useForm({
-    constraint: getZodConstraint(loginSchema),
+    constraint: getZodConstraint(registerSchema),
     shouldValidate: "onBlur",
     shouldRevalidate: "onInput",
     onValidate({ formData }) {
       return parseWithZod(formData, {
-        schema: loginSchema,
+        schema: registerSchema,
       });
     },
     onSubmit(event, { submission }) {
@@ -49,13 +58,9 @@ function LoginPage() {
 
       setFormData(values);
       mutate(values);
-      console.log("Sign in values:", values);
+      console.log("Sign up values:", values);
     },
   });
-
-  if(isSuccess){
-    console.log(user, '--------')
-  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -78,15 +83,32 @@ function LoginPage() {
 
   const statusMessage =
     data?.data?.message ??
-    (isSuccess ? "Signed in successfully." : getRequestErrorMessage(error));
+    (isSuccess
+      ? "Account created successfully."
+      : getRequestErrorMessage(error));
 
   return (
     <div className="h-screen w-full flex justify-center items-center">
       <div className="w-[25rem] rounded-md md:rounded-lg shadow border border-gray-300 p-3 lg:p-6 flex flex-col gap-3">
         <h1 className="text-2xl text-orange-600 font-bold py-2 text-center">
-          Sign In
+          Register
         </h1>
         <form {...getFormProps(form)} className="flex flex-col gap-3 mt-3">
+          <input
+            {...getInputProps(fields.fullname, {
+              type: "text",
+              value: false,
+            })}
+            placeholder="Name"
+            value={formData.fullname}
+            onChange={handleChange}
+            className="w-full px-3 border border-gray-300 text-gray-600 outline-none rounded-md py-2"
+          />
+          {fields.fullname.errors?.[0] ? (
+            <p id={fields.fullname.errorId} className="text-sm text-red-600">
+              {fields.fullname.errors[0]}
+            </p>
+          ) : null}
           <input
             {...getInputProps(fields.email, {
               type: "email",
@@ -113,7 +135,7 @@ function LoginPage() {
               value={formData.password}
               onChange={handleChange}
               className="w-full px-3 pr-12 border border-gray-300 text-gray-600 outline-none rounded-md py-2"
-              autoComplete="current-password"
+              autoComplete="new-password"
             />
             <button
               type="button"
@@ -144,7 +166,7 @@ function LoginPage() {
             {isPending ? <FiLoader className="animate-spin" size={18} /> : null}
             {isSuccess ? <FiCheck size={18} /> : null}
             <span>
-              {isPending ? "Signing In..." : isSuccess ? "Success" : "Submit"}
+              {isPending ? "Creating Account..." : isSuccess ? "Success" : "Submit"}
             </span>
           </button>
           {isError ? (
@@ -162,9 +184,9 @@ function LoginPage() {
         </form>
 
         <div className="mt-2 text-center">
-          You don't have account?{" "}
-          <a href="/signup" className="underline text-orange-600 text-center">
-            Register
+          You already have account?{" "}
+          <a href="/auth/login" className="underline text-orange-600 text-center">
+            Login
           </a>
         </div>
       </div>
@@ -172,4 +194,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default RegisterPage;

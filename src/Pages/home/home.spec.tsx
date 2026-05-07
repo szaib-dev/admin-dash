@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import HomePage from "./home";
+import HomePage from "./layout";
 export const user = (a, b) => {
   return a + b;
 };
