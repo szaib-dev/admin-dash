@@ -1,5 +1,13 @@
 export type CredentialType = {
-    fullname?: string
-    email: string
-    password: string
-}
+  fullname?: string;
+  email: string;
+  password: string;
+};
+
+export const UserRole = {
+  ADMIN: "ADMIN",
+  MANAGER: "MANAGER",
+  USER: "USER",
+} as const;
+
+export type UserRole = (typeof UserRole)[keyof typeof UserRole];

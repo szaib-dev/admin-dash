@@ -6,6 +6,7 @@ import { FiAlertCircle, FiCheck, FiEye, FiEyeOff, FiLoader } from "react-icons/f
 import type { CredentialType } from "../../types";
 import { AuthLogin } from "../../http/api";
 import { getRequestErrorMessage, loginSchema } from "../../validation/auth";
+import useMainStore from "../../store/MainStore";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ function LoginPage() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const {fetchUserItself, user} = useMainStore()
 
   const login = async (data: CredentialType) => {
     return AuthLogin(data);
@@ -23,6 +25,7 @@ function LoginPage() {
     mutationFn: login,
     onSuccess: () => {
       setShowPassword(false);
+      fetchUserItself()
     },
   });
 
@@ -49,6 +52,10 @@ function LoginPage() {
       console.log("Sign in values:", values);
     },
   });
+
+  if(isSuccess){
+    console.log(user, '--------')
+  }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
