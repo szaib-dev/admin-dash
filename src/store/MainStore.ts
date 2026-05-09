@@ -9,6 +9,11 @@ interface MainInterface {
     email: string;
     id: string;
     role: "ADMIN" | "MANAGER" | "USER";
+    tenant?: {
+      id: string;
+      name: string;
+      address: string;
+    };
   } | null;
 
   fetchUserItself: () => Promise<void>;

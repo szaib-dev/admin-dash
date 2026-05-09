@@ -34,22 +34,22 @@ function Sidebar() {
 
 
   return (
-   <SideBaz>
-      <SidebarHeader>
+   <SideBaz className="bg-white ">
+      <SidebarHeader className="bg-white ">
         <div className="px-2 py-2 flex items-center gap-3">
           <img src='/logo.png' height={20} width={20}  className='size-12'/>
           <p className="text-sm text-muted-foreground">Admin Dashboard</p>
         </div>
       </SidebarHeader>
 
-      <SidebarContent>
+      <SidebarContent className="bg-white ">
         <SidebarGroup>
 
-          <SidebarGroupContent>
-            <SidebarMenu>
+          <SidebarGroupContent className="bg-white ">
+            <SidebarMenu className="bg-white ">
               {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton className='hover:bg-amber-500' asChild>
+                <SidebarMenuItem key={item.title} className="bg-white ">
+                  <SidebarMenuButton className="bg-white " asChild>
                     <a href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>

@@ -1,4 +1,20 @@
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -7,9 +23,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { GetAllMembers } from "@/http/api";
 
 import { useQuery } from "@tanstack/react-query";
+import { FiPlus, FiSearch } from "react-icons/fi";
+import { Link } from "react-router-dom";
+import { Input } from "@/components/ui/input";
 
 interface Members {
   fullname: string;
@@ -24,7 +51,11 @@ function UsersPage() {
     return response.data.list as Members[];
   };
 
-  const { data = [], isPending, error } = useQuery<Members[], Error>({
+  const {
+    data = [],
+    isPending,
+    error,
+  } = useQuery<Members[], Error>({
     queryKey: ["members"],
     queryFn: callMembers,
   });
@@ -49,31 +80,115 @@ function UsersPage() {
 
   return (
     <div className="flex size-full bg-white/90">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>UserId</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Role</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data.map((member) => {
-            return (
-              <TableRow key={member.id}>
-                <TableCell>{member.id}</TableCell>
-                <TableCell>{member.fullname}</TableCell>
-                <TableCell>{member.email}</TableCell>
-                <TableCell>{member.role}</TableCell>
-                <TableCell>
-                  <Button variant="secondary">Edit</Button>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+      <div className="p-4 size-full">
+        <Breadcrumb className="py-3">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink>
+                <Link to={"/"}>Home</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>Users</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
+
+        <div className="w-full py-3 flex justify-between items-center">
+          <div className="flex gap-12">
+            <div className="relative w-xs">
+              <FiSearch className="absolute size-5 text-gray-400 top-1/2 z-10 left-3 transform -translate-y-1/2 " />
+              <input
+                type="text"
+                className="size-full border border-gray-300 outline-none px-3 pl-10 rounded-lg bg-white py-2"
+              />
+            </div>
+
+            <Select>
+              <SelectTrigger className="cursor-pointer ">
+                <SelectValue placeholder="Role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectItem className="cursor-pointer" value="MANAGER">
+                    MANAGER
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="ADMIN">
+                    ADMIN
+                  </SelectItem>
+                  <SelectItem className="cursor-pointer" value="USER">
+                    USER
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                variant="ghost"
+                className="flex cursor-pointer items-center"
+              >
+                <FiPlus className="mt-0.5" /> Create users
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Create new users and assign roles?</DialogTitle>
+                <DialogDescription>
+                  This action cannot be undone. This will permanently delete
+                  your account and remove your data from our servers.
+                </DialogDescription>
+              </DialogHeader>
+
+              <Input placeholder="Fullname" />
+              <Input placeholder="Email" />
+              <Input placeholder="Password" />
+              <Select>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="USER">USER</SelectItem>
+                    <SelectItem value="MANAGER">MANAGER</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Button className="cursor-pointer">Submit</Button>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>UserId</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {data.map((member) => {
+              return (
+                <TableRow key={member.id}>
+                  <TableCell>{member.id}</TableCell>
+                  <TableCell>{member.fullname}</TableCell>
+                  <TableCell>{member.email}</TableCell>
+                  <TableCell>{member.role}</TableCell>
+                  <TableCell>
+                    <Button variant="secondary" className="cursor-pointer">
+                      Edit
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
