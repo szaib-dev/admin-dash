@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react'
-import useMainStore from '../store/MainStore'
-import { Outlet } from 'react-router-dom';
+import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
+import useMainStore from "../store/MainStore";
 
 function RootLayout() {
-    const {fetchUserItself} = useMainStore();
+  const { fetchUserItself } = useMainStore();
 
-    useEffect(()=>{
-       fetchUserItself()
-    },[])
+  useEffect(() => {
+    void fetchUserItself();
+  }, [fetchUserItself]);
+
   return (
     <div>
-        <Outlet />
+      <Outlet />
     </div>
-  )
+  );
 }
 
-export default RootLayout
+export default RootLayout;

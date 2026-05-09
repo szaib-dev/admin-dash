@@ -1,5 +1,5 @@
+import { useState, type ChangeEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
-import React, { useState } from "react";
 import { getFormProps, getInputProps, useForm } from "@conform-to/react";
 import { getZodConstraint, parseWithZod } from "@conform-to/zod/v4";
 import {
@@ -62,7 +62,7 @@ function RegisterPage() {
     },
   });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
 
     if (isSuccess || isError) {

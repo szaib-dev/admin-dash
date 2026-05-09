@@ -39,8 +39,11 @@ export const getRequestErrorMessage = (error: unknown) => {
       );
     }
 
+    if (responseData && !Array.isArray(responseData) && responseData.message) {
+      return responseData.message;
+    }
+
     return (
-      responseData?.message ??
       error.message ??
       "Something went wrong. Please try again."
     );

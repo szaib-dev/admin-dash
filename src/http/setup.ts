@@ -1,10 +1,14 @@
 import { create } from "axios";
-import useMainStore from "../store/MainStore";
 
 export const AxiosAuth = create({
   baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}/api/user`,
   withCredentials: true,
 });
+
+export const AxiosMembers = create({
+    baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}/api/member`,
+    withCredentials: true
+})
 
 AxiosAuth.interceptors.response.use(
   (response) => response,
@@ -20,7 +24,6 @@ AxiosAuth.interceptors.response.use(
          await AxiosAuth.get("/refresh-tokens");
       return AxiosAuth(originalRequest);
      } catch (refreshError) {
-        useMainStore.getState().logoutUserItself();
         return Promise.reject(refreshError)
      }
 

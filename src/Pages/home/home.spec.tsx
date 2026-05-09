@@ -1,13 +1,15 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import HomePage from "./layout";
-export const user = (a, b) => {
+import HomePage from "./home";
+
+export const user = (a: number, b: number) => {
   return a + b;
 };
+
 describe("/HomePage TEST", () => {
   it("should be 4", () => {
     render(<HomePage />);
 
-    expect(screen.getByText(/HomePage/)).toBeInTheDocument();
+    expect(screen.getByText(/Homepage/i)).toBeInTheDocument();
   });
 });
