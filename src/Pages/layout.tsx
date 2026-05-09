@@ -3,11 +3,11 @@ import useMainStore from '../store/MainStore'
 import { Outlet } from 'react-router-dom';
 
 function RootLayout() {
-    const {fetchUserItself, user} = useMainStore();
+    const {fetchUserItself} = useMainStore();
 
     useEffect(()=>{
        fetchUserItself()
-    },[user])
+    },[])
   return (
     <div>
         <Outlet />
