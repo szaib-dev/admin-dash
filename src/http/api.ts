@@ -1,5 +1,5 @@
 import type { CredentialType } from "../types";
-import { AxiosAuth, AxiosMembers } from "./setup";
+import { AxiosAuth, AxiosMembers, AxiosTenants } from "./setup";
 
 // Auth
 const AuthLogin = async (data: CredentialType) =>
@@ -18,13 +18,26 @@ const UpdateMemberById = async (memberId: string) =>
 const DeleteMemberById = async (memberId: string) =>
   AxiosMembers.delete(`/delete/${memberId}`);
 
+// Tenants 
+const GetAllTenants = async () => AxiosTenants.get("/list");
+const GetTenantById = async () => AxiosTenants.get("/list");
+const UpdateTenantById = async () => AxiosTenants.get("/list");
+const DeleteTenantById = async () => AxiosTenants.get("/list");
+
 export {
   AuthLogin,
   AuthRegister,
 
   GetAllMembers,
   GetMemberById,
-
   UpdateMemberById,
   DeleteMemberById,
+
+  GetAllTenants,
+  GetTenantById,
+  UpdateTenantById,
+  DeleteTenantById,
+
+
+  
 };

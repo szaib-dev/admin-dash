@@ -23,21 +23,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { GetAllMembers } from "@/http/api";
 
 import { useQuery } from "@tanstack/react-query";
-import { FiPlus, FiSearch } from "react-icons/fi";
+import {  FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
+import DialogComponent from "./DialogComponent";
 
 interface Members {
   fullname: string;
@@ -50,8 +42,7 @@ function UsersPage() {
   const callMembers = async () => {
     const response = await GetAllMembers();
     return response.data.list as Members[];
-  };
-
+  }; 
   const {
     data = [],
     isPending,
@@ -102,11 +93,12 @@ function UsersPage() {
               <FiSearch className="absolute size-5 text-gray-400 top-1/2 z-10 left-3 transform -translate-y-1/2 " />
               <input
                 type="text"
+                onChange={(e)=> console.log(e.target.value)}
                 className="size-full border border-gray-300 outline-none px-3 pl-10 rounded-lg bg-white py-2"
               />
             </div>
 
-            <Select>
+            <Select onValueChange={(value) => console.log(value)}>
               <SelectTrigger className="cursor-pointer ">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
@@ -125,41 +117,7 @@ function UsersPage() {
               </SelectContent>
             </Select>
           </div>
-          <Dialog>
-            <DialogTrigger>
-              <Button
-                variant="ghost"
-                className="flex cursor-pointer items-center"
-              >
-                <FiPlus className="mt-0.5" /> Create users
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Create new users and assign roles?</DialogTitle>
-                <DialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </DialogDescription>
-              </DialogHeader>
-
-              <Input placeholder="Fullname" />
-              <Input placeholder="Email" />
-              <Input placeholder="Password" />
-              <Select>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Role" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectGroup>
-                    <SelectItem value="USER">USER</SelectItem>
-                    <SelectItem value="MANAGER">MANAGER</SelectItem>
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-              <Button className="cursor-pointer">Submit</Button>
-            </DialogContent>
-          </Dialog>
+        <DialogComponent />
         </div>
 
         <Card>

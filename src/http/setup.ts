@@ -10,6 +10,11 @@ export const AxiosMembers = create({
     withCredentials: true
 })
 
+export const AxiosTenants = create({
+    baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}/api/tenant`,
+    withCredentials: true
+})
+
 AxiosAuth.interceptors.response.use(
   (response) => response,
   async (err) => {
