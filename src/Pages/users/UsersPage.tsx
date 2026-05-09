@@ -37,6 +37,7 @@ import { useQuery } from "@tanstack/react-query";
 import { FiPlus, FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface Members {
   fullname: string;
@@ -79,8 +80,8 @@ function UsersPage() {
   }
 
   return (
-    <div className="flex size-full bg-white/90">
-      <div className="p-4 size-full">
+    <div className=" bg-gray-100">
+      <div className=" flex flex-col gap-4 p-4">
         <Breadcrumb className="py-3">
           <BreadcrumbList>
             <BreadcrumbItem>
@@ -95,7 +96,7 @@ function UsersPage() {
           </BreadcrumbList>
         </Breadcrumb>
 
-        <div className="w-full py-3 flex justify-between items-center">
+        <div className="w-full py-3 flex justify-between items-center bg-white px-4 rounded-sm ">
           <div className="flex gap-12">
             <div className="relative w-xs">
               <FiSearch className="absolute size-5 text-gray-400 top-1/2 z-10 left-3 transform -translate-y-1/2 " />
@@ -161,7 +162,9 @@ function UsersPage() {
           </Dialog>
         </div>
 
-        <Table>
+        <Card>
+            <CardContent>
+                <Table>
           <TableHeader>
             <TableRow>
               <TableHead>UserId</TableHead>
@@ -188,6 +191,8 @@ function UsersPage() {
             })}
           </TableBody>
         </Table>
+            </CardContent>
+        </Card>
       </div>
     </div>
   );
