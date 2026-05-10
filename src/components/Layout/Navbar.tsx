@@ -4,11 +4,15 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 
 function Navbar() {
   const { user } = useMainStore();
+  const tenantName = user?.tenant?.name ?? "ADMIN";
+  const userInitial = user?.fullname?.charAt(0).toUpperCase() ?? "A";
+  const userLabel = user?.fullname ? `${user.fullname.slice(0, 4)}...` : "Admin";
+
   return (
-    <div className="flex justify-between items-center px-8">
-      <div className="py-4">
+    <div className="flex justify-between items-center px-8 py-6.5 border-b  bg-white" >
+      <div >
         <Badge className="h-6 bg-amber-500/50 text-black/50 px-5">
-          {user.tenant && user.tenant.name ? user.tenant.name : "ADMIN"}
+          {tenantName}
         </Badge>
       </div>
 
@@ -16,10 +20,10 @@ function Navbar() {
       <div className="flex items-center gap-3 bg-gray-100 rounded-lg px-2 py-1">
         <Avatar>
         <AvatarFallback className="bg-orange-500/30 text-gray-500 flex justify-center items-center">
-          {user.fullname.charAt(0)}
+          {userInitial}
         </AvatarFallback>
       </Avatar>
-        <p>{user.fullname.slice(-4)}..</p>
+        <p>{userLabel}</p>
 
       </div>
     </div>

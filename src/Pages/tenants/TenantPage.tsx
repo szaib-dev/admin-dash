@@ -6,7 +6,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -23,7 +22,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { GetAllMembers } from "@/http/api";
+import { GetAllTenants } from "@/http/api";
 
 import { useQuery } from "@tanstack/react-query";
 import {  FiSearch } from "react-icons/fi";
@@ -31,25 +30,24 @@ import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import DialogComponent from "./DialogComponent";
 
-interface Members {
-  fullname: string;
-  email: string;
+interface Tenant {
   id: string;
-  role: string;
+  name: string;
+  address: string;
 }
 
-function UsersPage() {
-  const callMembers = async () => {
-    const response = await GetAllMembers();
-    return response.data.list as Members[];
+function TenantsPage() {
+  const callTenants = async () => {
+    const response = await GetAllTenants();
+    return response.data.list as Tenant[];
   }; 
   const {
     data = [],
     isPending,
     error,
-  } = useQuery<Members[], Error>({
-    queryKey: ["members"],
-    queryFn: callMembers,
+  } = useQuery({
+    queryKey: ["tenants"],
+    queryFn: callTenants,
   });
 
   if (isPending) {
@@ -71,7 +69,7 @@ function UsersPage() {
   }
 
   return (
-    <div className=" bg-gray-100">
+    <div className=" bg-gray-100  ">
       <div className=" flex flex-col gap-4 p-4">
         <Breadcrumb className="py-3">
           <BreadcrumbList>
@@ -82,7 +80,7 @@ function UsersPage() {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbPage>Users</BreadcrumbPage>
+              <BreadcrumbPage>Resturants</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
@@ -100,18 +98,18 @@ function UsersPage() {
 
             <Select onValueChange={(value) => console.log(value)}>
               <SelectTrigger className="cursor-pointer ">
-                <SelectValue placeholder="Role" />
+                <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem className="cursor-pointer" value="MANAGER">
-                    MANAGER
+                  <SelectItem className="cursor-pointer" value="ACTIVE">
+                    ACTIVE
                   </SelectItem>
-                  <SelectItem className="cursor-pointer" value="ADMIN">
-                    ADMIN
+                  <SelectItem className="cursor-pointer" value="BAN">
+                    BAN
                   </SelectItem>
                   <SelectItem className="cursor-pointer" value="USER">
-                    USER
+                    PENDING
                   </SelectItem>
                 </SelectGroup>
               </SelectContent>
@@ -120,15 +118,14 @@ function UsersPage() {
         <DialogComponent />
         </div>
 
-        <Card className="h-[calc(100vh-200px)] overflow-y-scroll ">
+        <Card className="h-[calc(100vh-260px)] overflow-y-scroll ">
             <CardContent>
                 <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>UserId</TableHead>
+              <TableHead>ResturantId</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
+              <TableHead>Address</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -136,14 +133,8 @@ function UsersPage() {
               return (
                 <TableRow key={member.id}>
                   <TableCell>{member.id}</TableCell>
-                  <TableCell>{member.fullname}</TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell>{member.role}</TableCell>
-                  <TableCell>
-                    <Button variant="secondary" className="cursor-pointer">
-                      Edit
-                    </Button>
-                  </TableCell>
+                  <TableCell>{member.name}</TableCell>
+                  <TableCell>{member.address}</TableCell>
                 </TableRow>
               );
             })}
@@ -156,4 +147,4 @@ function UsersPage() {
   );
 }
 
-export default UsersPage;
+export default TenantsPage;

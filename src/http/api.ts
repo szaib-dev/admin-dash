@@ -23,6 +23,7 @@ const GetAllTenants = async () => AxiosTenants.get("/list");
 const GetTenantById = async () => AxiosTenants.get("/list");
 const UpdateTenantById = async () => AxiosTenants.get("/list");
 const DeleteTenantById = async () => AxiosTenants.get("/list");
+const CreateTenant = async(data) => AxiosTenants.post('/create', data)
 
 export {
   AuthLogin,
@@ -37,6 +38,7 @@ export {
   GetTenantById,
   UpdateTenantById,
   DeleteTenantById,
+  CreateTenant
 
 
   

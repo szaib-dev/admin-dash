@@ -6,6 +6,7 @@ import Homepage from "./Pages/home/home";
 import HomeLayout from "./Pages/home/layout";
 import RootLayout from "./Pages/layout";
 import UsersPage from "./Pages/users/UsersPage";
+import TenantsPage from "./Pages/tenants/TenantPage";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
           {
             path: '/users',
             element: <UsersPage />
+          },
+          {
+            path: '/resturants',
+            element: <TenantsPage />
           }
         ],
       },

@@ -2,7 +2,6 @@ import { Navigate, Outlet } from "react-router-dom";
 import useMainStore from "../../store/MainStore";
 import Navbar from "../../components/Layout/Navbar";
 import Sidebar from "../../components/Layout/Sidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
 
 function HomeLayout() {
   const { user } = useMainStore();
@@ -19,15 +18,13 @@ function HomeLayout() {
 
 
   return (
-    <SidebarProvider>
-      <div className="flex h-screen w-full">
-         <Sidebar />
-        <div className="flex flex-col size-full">
-          <Navbar />
-          <Outlet />
-        </div>
+    <div className="flex h-screen overflow-hidden w-full bg-slate-50">
+      <Sidebar />
+      <div className="flex h-full flex-1 flex-col">
+        <Navbar />
+        <Outlet />
       </div>
-    </SidebarProvider>
+    </div>
   );
 }
 
