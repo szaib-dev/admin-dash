@@ -1,4 +1,5 @@
 import type { CredentialType } from "../types";
+import type { CreateTenantValues, CreateUserValues } from "../validation/dashboard";
 import { AxiosAuth, AxiosMembers, AxiosTenants } from "./setup";
 
 // Auth
@@ -17,13 +18,14 @@ const UpdateMemberById = async (memberId: string) =>
   AxiosMembers.patch(`/update/${memberId}`);
 const DeleteMemberById = async (memberId: string) =>
   AxiosMembers.delete(`/delete/${memberId}`);
+const CreateNewMember = (data: CreateUserValues) => AxiosMembers.post('/create', data)
 
 // Tenants 
 const GetAllTenants = async () => AxiosTenants.get("/list");
 const GetTenantById = async () => AxiosTenants.get("/list");
 const UpdateTenantById = async () => AxiosTenants.get("/list");
 const DeleteTenantById = async () => AxiosTenants.get("/list");
-const CreateTenant = async(data) => AxiosTenants.post('/create', data)
+const CreateTenant = async(data: CreateTenantValues) => AxiosTenants.post('/create', data)
 
 export {
   AuthLogin,
@@ -33,6 +35,7 @@ export {
   GetMemberById,
   UpdateMemberById,
   DeleteMemberById,
+  CreateNewMember,
 
   GetAllTenants,
   GetTenantById,

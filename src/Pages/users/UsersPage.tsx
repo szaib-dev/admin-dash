@@ -120,7 +120,7 @@ function UsersPage() {
         <DialogComponent />
         </div>
 
-        <Card className="h-[calc(100vh-200px)] overflow-y-scroll ">
+        <Card className="h-[calc(100vh-260px)] overflow-y-scroll ">
             <CardContent>
                 <Table>
           <TableHeader>
