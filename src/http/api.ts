@@ -24,7 +24,7 @@ const CreateNewMember = (data: CreateUserValues) => AxiosMembers.post('/create',
 const GetAllTenants = async () => AxiosTenants.get("/list");
 const GetTenantById = async () => AxiosTenants.get("/list");
 const UpdateTenantById = async () => AxiosTenants.get("/list");
-const DeleteTenantById = async () => AxiosTenants.get("/list");
+const DeleteTenantById = async (tenantId: string) => AxiosTenants.delete(`/delete/${tenantId}`);
 const CreateTenant = async(data: CreateTenantValues) => AxiosTenants.post('/create', data)
 
 export {

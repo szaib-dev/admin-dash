@@ -10,15 +10,15 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { DeleteMemberById } from "@/http/api";
+import { DeleteTenantById } from "@/http/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-function DeleteAlertDialog(props: { userId: string }) {
-  const userId = props.userId;
+function DeleteAlertDialog(props: { tenantId: string }) {
+  const tenantId = props.tenantId;
 
   const deleteUser = async () => {
-    return await DeleteMemberById(userId);
+    return await DeleteTenantById(tenantId);
   };
    const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -26,7 +26,7 @@ function DeleteAlertDialog(props: { userId: string }) {
     mutationFn: deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["members"],
+        queryKey: ["tenants"],
       });
        setOpen(false);
     },
@@ -35,7 +35,7 @@ function DeleteAlertDialog(props: { userId: string }) {
   return (
     <div>
       <AlertDialog open={open} onOpenChange={(open) => isSuccess && !open}>
-        <AlertDialogTrigger asChild>
+        <AlertDialogTrigger className="flex justify-center items-cener mt-1" asChild>
           <Button onClick={ ()=> setOpen(true) } variant="destructive" className="cursor-pointer">
             Delete
           </Button>

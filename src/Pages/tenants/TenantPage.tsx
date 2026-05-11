@@ -29,6 +29,7 @@ import {  FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import DialogComponent from "./DialogComponent";
+import DeleteAlertDialog from "./DeleteAlertDialog";
 
 interface Tenant {
   id: string;
@@ -129,12 +130,13 @@ function TenantsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((member) => {
+            {data.map((tenant) => {
               return (
-                <TableRow key={member.id}>
-                  <TableCell>{member.id}</TableCell>
-                  <TableCell>{member.name}</TableCell>
-                  <TableCell>{member.address}</TableCell>
+                <TableRow key={tenant.id}>
+                  <TableCell>{tenant.id}</TableCell>
+                  <TableCell>{tenant.name}</TableCell>
+                  <TableCell>{tenant.address}</TableCell>
+                  <DeleteAlertDialog tenantId={tenant.id} />
                 </TableRow>
               );
             })}
