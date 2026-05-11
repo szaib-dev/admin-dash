@@ -30,6 +30,7 @@ import {  FiSearch } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import DialogComponent from "./DialogComponent";
+import DeleteAlertDialog from "./DeleteAlertDialog";
 
 interface Members {
   fullname: string;
@@ -129,6 +130,8 @@ function UsersPage() {
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Role</TableHead>
+              <TableHead>Edit</TableHead>
+              <TableHead>Delete</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -143,6 +146,9 @@ function UsersPage() {
                     <Button variant="secondary" className="cursor-pointer">
                       Edit
                     </Button>
+                  </TableCell>
+                  <TableCell>
+                    <DeleteAlertDialog userId={member.id} />
                   </TableCell>
                 </TableRow>
               );
