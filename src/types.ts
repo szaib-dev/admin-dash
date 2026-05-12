@@ -11,3 +11,15 @@ export const UserRole = {
 } as const;
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
+
+export interface TenantData {
+  id : string,
+  name: string,
+  address: string
+}
+export interface  UserData {
+  id: string
+  fullname: string
+  email: string,
+  role: "MANAGER" | "USER"
+  tenant?: TenantData }

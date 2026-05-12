@@ -7,14 +7,6 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Table,
   TableBody,
   TableCell,
@@ -25,8 +17,8 @@ import {
 import { GetAllTenants } from "@/http/api";
 
 import { useQuery } from "@tanstack/react-query";
-import {  FiSearch } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { FiSearch } from "react-icons/fi";
+import { Link, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import DialogComponent from "./DialogComponent";
 import DeleteAlertDialog from "./DeleteAlertDialog";
@@ -38,26 +30,21 @@ interface Tenant {
 }
 
 function TenantsPage() {
+  const [searchParam, setSearchParam] = useSearchParams();
+  const searchName = searchParam.get("searchName") || "";
+
   const callTenants = async () => {
-    const response = await GetAllTenants();
+    const response = await GetAllTenants(searchName);
     return response.data.list as Tenant[];
-  }; 
+  };
   const {
     data = [],
-    isPending,
     error,
   } = useQuery({
-    queryKey: ["tenants"],
+    queryKey: ["tenants", searchName],
     queryFn: callTenants,
   });
 
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center size-full">
-        <h1 className=" animate-pulse text-3xl">Loading</h1>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -92,57 +79,58 @@ function TenantsPage() {
               <FiSearch className="absolute size-5 text-gray-400 top-1/2 z-10 left-3 transform -translate-y-1/2 " />
               <input
                 type="text"
-                onChange={(e)=> console.log(e.target.value)}
+                value={searchName}
+                placeholder="Search restaurants..."
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  if (value.trim()) {
+                    setSearchParam({ searchName: value });
+                  } else {
+                    setSearchParam({});
+                  }
+                }}
                 className="size-full border border-gray-300 outline-none px-3 pl-10 rounded-lg bg-white py-2"
               />
             </div>
-
-            <Select onValueChange={(value) => console.log(value)}>
-              <SelectTrigger className="cursor-pointer ">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem className="cursor-pointer" value="ACTIVE">
-                    ACTIVE
-                  </SelectItem>
-                  <SelectItem className="cursor-pointer" value="BAN">
-                    BAN
-                  </SelectItem>
-                  <SelectItem className="cursor-pointer" value="USER">
-                    PENDING
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
           </div>
-        <DialogComponent />
+          <DialogComponent isCreating={true} />
         </div>
 
         <Card className="h-[calc(100vh-260px)] overflow-y-scroll ">
-            <CardContent>
-                <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>ResturantId</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Address</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((tenant) => {
-              return (
-                <TableRow key={tenant.id}>
-                  <TableCell>{tenant.id}</TableCell>
-                  <TableCell>{tenant.name}</TableCell>
-                  <TableCell>{tenant.address}</TableCell>
-                  <DeleteAlertDialog tenantId={tenant.id} />
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ResturantId</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Address</TableHead>
+                  <TableHead>Edit</TableHead>
+                  <TableHead>Delete</TableHead>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-            </CardContent>
+              </TableHeader>
+              <TableBody>
+                {data.map((tenant) => {
+                  return (
+                    <TableRow key={tenant.id}>
+                      <TableCell>{tenant.id}</TableCell>
+                      <TableCell>{tenant.name}</TableCell>
+                      <TableCell>{tenant.address}</TableCell>
+                      <TableCell>
+                        <DialogComponent
+                          isCreating={false}
+                          UpdateTenantData={tenant}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <DeleteAlertDialog tenantId={tenant.id} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
         </Card>
       </div>
     </div>

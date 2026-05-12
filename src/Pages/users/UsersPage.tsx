@@ -6,7 +6,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -26,11 +25,12 @@ import {
 import { GetAllMembers } from "@/http/api";
 
 import { useQuery } from "@tanstack/react-query";
-import {  FiSearch } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { FiSearch } from "react-icons/fi";
+import { Link, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import DialogComponent from "./DialogComponent";
 import DeleteAlertDialog from "./DeleteAlertDialog";
+import type { UserData } from "@/types";
 
 interface Members {
   fullname: string;
@@ -40,26 +40,36 @@ interface Members {
 }
 
 function UsersPage() {
+  const [searchParam, setSearchParam] = useSearchParams();
+
+  const searchName = searchParam.get("searchName") || "";
+  const role = searchParam.get("role") || "";
+
+  const updateFilters = (next: { searchName?: string; role?: string }) => {
+    const params = new URLSearchParams();
+
+    if (next.searchName?.trim()) {
+      params.set("searchName", next.searchName.trim());
+    }
+
+    if (next.role?.trim()) {
+      params.set("role", next.role.trim());
+    }
+
+    setSearchParam(params);
+  };
+
   const callMembers = async () => {
-    const response = await GetAllMembers();
+    const response = await GetAllMembers(searchName, role);
     return response.data.list as Members[];
-  }; 
+  };
   const {
     data = [],
-    isPending,
     error,
   } = useQuery<Members[], Error>({
-    queryKey: ["members"],
+    queryKey: ["members", searchName, role],
     queryFn: callMembers,
   });
-
-  if (isPending) {
-    return (
-      <div className="flex justify-center items-center size-full">
-        <h1 className=" animate-pulse text-3xl">Loading</h1>
-      </div>
-    );
-  }
 
   if (error) {
     return (
@@ -94,22 +104,35 @@ function UsersPage() {
               <FiSearch className="absolute size-5 text-gray-400 top-1/2 z-10 left-3 transform -translate-y-1/2 " />
               <input
                 type="text"
-                onChange={(e)=> console.log(e.target.value)}
+                value={searchName}
+                placeholder="Search members..."
+                onChange={(e) => {
+                  const value = e.target.value;
+                  updateFilters({ searchName: value, role });
+                }}
                 className="size-full border border-gray-300 outline-none px-3 pl-10 rounded-lg bg-white py-2"
               />
             </div>
 
-            <Select onValueChange={(value) => console.log(value)}>
+            <Select
+              value={role || "ALL"}
+              onValueChange={(value) =>
+                updateFilters({
+                  searchName,
+                  role: value === "ALL" ? "" : value,
+                })
+              }
+            >
               <SelectTrigger className="cursor-pointer ">
                 <SelectValue placeholder="Role" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
+                  <SelectItem className="cursor-pointer" value="ALL">
+                    ALL
+                  </SelectItem>
                   <SelectItem className="cursor-pointer" value="MANAGER">
                     MANAGER
-                  </SelectItem>
-                  <SelectItem className="cursor-pointer" value="ADMIN">
-                    ADMIN
                   </SelectItem>
                   <SelectItem className="cursor-pointer" value="USER">
                     USER
@@ -118,44 +141,45 @@ function UsersPage() {
               </SelectContent>
             </Select>
           </div>
-        <DialogComponent />
+          <DialogComponent isCreating={true} />
         </div>
 
         <Card className="h-[calc(100vh-260px)] overflow-y-scroll ">
-            <CardContent>
-                <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>UserId</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>Edit</TableHead>
-              <TableHead>Delete</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {data.map((member) => {
-              return (
-                <TableRow key={member.id}>
-                  <TableCell>{member.id}</TableCell>
-                  <TableCell>{member.fullname}</TableCell>
-                  <TableCell>{member.email}</TableCell>
-                  <TableCell>{member.role}</TableCell>
-                  <TableCell>
-                    <Button variant="secondary" className="cursor-pointer">
-                      Edit
-                    </Button>
-                  </TableCell>
-                  <TableCell>
-                    <DeleteAlertDialog userId={member.id} />
-                  </TableCell>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>UserId</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Edit</TableHead>
+                  <TableHead>Delete</TableHead>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-            </CardContent>
+              </TableHeader>
+              <TableBody>
+                {data.map((member: UserData) => {
+                  return (
+                    <TableRow key={member.id}>
+                      <TableCell>{member.id}</TableCell>
+                      <TableCell>{member.fullname}</TableCell>
+                      <TableCell>{member.email}</TableCell>
+                      <TableCell>{member.role}</TableCell>
+                      <TableCell>
+                        <DialogComponent
+                          isCreating={false}
+                          UpdateMemberData={member}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <DeleteAlertDialog userId={member.id} />
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </CardContent>
         </Card>
       </div>
     </div>

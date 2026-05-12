@@ -10,20 +10,35 @@ const AuthRegister = async (data: CredentialType) =>
 
 // Members
 
-const GetAllMembers = async () => AxiosMembers.get("/list");
+const GetAllMembers = async (searchName?: string, role?: string) => {
+  const params: Record<string, string> = {};
+
+  if (searchName?.trim()) {
+    params.searchName = searchName.trim();
+  }
+
+  if (role?.trim()) {
+    params.role = role.trim();
+  }
+
+  return AxiosMembers.get(`/list`, { params });
+};
 const GetMemberById = async (memberId: string) =>
   AxiosMembers.get(`/list/${memberId}`);
 
-const UpdateMemberById = async (memberId: string) =>
-  AxiosMembers.patch(`/update/${memberId}`);
+const UpdateMemberById = async (memberId: string, data) =>
+  AxiosMembers.patch(`/update/${memberId}`,data );
 const DeleteMemberById = async (memberId: string) =>
   AxiosMembers.delete(`/delete/${memberId}`);
 const CreateNewMember = (data: CreateUserValues) => AxiosMembers.post('/create', data)
 
 // Tenants 
-const GetAllTenants = async () => AxiosTenants.get("/list");
+const GetAllTenants = async (searchName?: string) =>
+  AxiosTenants.get("/list", {
+    params: searchName?.trim() ? { searchName: searchName.trim() } : {},
+  });
 const GetTenantById = async () => AxiosTenants.get("/list");
-const UpdateTenantById = async () => AxiosTenants.get("/list");
+const UpdateTenantById = async (tenantId: string, data) => AxiosTenants.patch(`/update/${tenantId}`, data);
 const DeleteTenantById = async (tenantId: string) => AxiosTenants.delete(`/delete/${tenantId}`);
 const CreateTenant = async(data: CreateTenantValues) => AxiosTenants.post('/create', data)
 
