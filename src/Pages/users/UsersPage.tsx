@@ -28,9 +28,9 @@ import { useQuery } from "@tanstack/react-query";
 import { FiSearch } from "react-icons/fi";
 import { Link, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import type { UserData } from "@/types";
 import DialogComponent from "./DialogComponent";
 import DeleteAlertDialog from "./DeleteAlertDialog";
-import type { UserData } from "@/types";
 
 interface Members {
   fullname: string;
@@ -63,10 +63,7 @@ function UsersPage() {
     const response = await GetAllMembers(searchName, role);
     return response.data.list as Members[];
   };
-  const {
-    data = [],
-    error,
-  } = useQuery<Members[], Error>({
+  const { data = [], error } = useQuery<Members[], Error>({
     queryKey: ["members", searchName, role],
     queryFn: callMembers,
   });

@@ -1,73 +1,178 @@
-# React + TypeScript + Vite
+# Admin Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A clean React admin panel for managing users and restaurants in the `coder-gyan` platform.
 
-Currently, two official plugins are available:
+Built with `React`, `TypeScript`, `Vite`, `TanStack Query`, `Axios`, `Tailwind CSS`, and `Shadcn UI`, this dashboard is designed for authenticated admin workflows such as:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- signing in and registering
+- browsing and managing platform users
+- filtering users by role
+- searching users by name
+- creating, updating, and deleting restaurants
+- searching restaurants by name or address
 
-## React Compiler
+## Preview
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+This app currently includes:
 
-## Expanding the ESLint configuration
+- `Login` and `Register` flows
+- `Users` page with:
+  - search
+  - role filter
+  - create/update/delete actions
+- `Restaurants` page with:
+  - search
+  - create/update/delete actions
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- `React 19`
+- `TypeScript`
+- `Vite`
+- `React Router`
+- `TanStack React Query`
+- `Axios`
+- `Tailwind CSS v4`
+- `Radix UI`
+- `Zod`
+- `Vitest`
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 1. Install dependencies
+
+```bash
+pnpm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Configure environment variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create or update `.env` in the `admin-dashboard` folder:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_AUTH_SERVICE_URL=http://localhost:YOUR_BACKEND_PORT
 ```
+
+Example:
+
+```env
+VITE_AUTH_SERVICE_URL=http://localhost:5000
+```
+
+This value is used by:
+
+- `AxiosAuth` for `/api/user`
+- `AxiosMembers` for `/api/member`
+- `AxiosTenants` for `/api/tenant`
+
+### 3. Start the development server
+
+```bash
+pnpm dev
+```
+
+The app will run with Vite's local development server.
+
+## Available Scripts
+
+```bash
+pnpm dev
+```
+
+Starts the dashboard in development mode.
+
+```bash
+pnpm build
+```
+
+Builds the production bundle.
+
+```bash
+pnpm preview
+```
+
+Previews the production build locally.
+
+```bash
+pnpm lint
+```
+
+Runs ESLint.
+
+```bash
+pnpm test-w
+```
+
+Runs Vitest in watch mode.
+
+## Project Structure
+
+```text
+admin-dashboard/
+├── public/
+├── src/
+│   ├── components/
+│   ├── http/
+│   ├── pages/
+│   │   ├── auth/
+│   │   ├── home/
+│   │   ├── tenants/
+│   │   └── users/
+│   ├── routes.tsx
+│   └── validation/
+├── .env
+├── package.json
+└── vite.config.ts
+```
+
+## Routing Overview
+
+Current main routes:
+
+- `/auth/login`
+- `/auth/register`
+- `/users`
+- `/resturants`
+
+Note: the route is currently spelled `/resturants` in code to match the existing project structure.
+
+## Data Flow
+
+The dashboard talks to the backend through three Axios clients:
+
+- `AxiosAuth`
+- `AxiosMembers`
+- `AxiosTenants`
+
+It also includes an auth refresh interceptor so expired access tokens can be refreshed automatically when possible.
+
+## Current Behavior
+
+### Users
+
+- empty search shows non-admin users
+- role filter supports `ALL`, `MANAGER`, and `USER`
+- search works with query params so the UI state is shareable in the URL
+
+### Restaurants
+
+- empty search shows all restaurants
+- search filters by restaurant name or address
+- the old status-style filter UI has been removed
+
+## Notes
+
+- This project uses `withCredentials: true`, so backend CORS and cookies must be configured correctly.
+- The dashboard depends on the companion backend service being available and reachable through `VITE_AUTH_SERVICE_URL`.
+
+## Future Improvements
+
+- add dashboard summary cards and analytics to the homepage
+- add pagination for larger user and restaurant datasets
+- add better empty states and loading skeletons
+- add stronger test coverage for CRUD flows
+- rename `/resturants` to `/restaurants` when backend/frontend naming is unified
+
+## License
+
+This project is part of the `coder-gyan` workspace.
