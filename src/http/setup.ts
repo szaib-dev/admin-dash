@@ -1,39 +1,23 @@
 import { create } from "axios";
 
+const AUTH_SERVICE = '/api/auth'
+
 export const AxiosAuth = create({
-  baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}/api/user`,
+  baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}${AUTH_SERVICE}/api/user`,
   withCredentials: true,
 });
 
 export const AxiosMembers = create({
-    baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}/api/member`,
+    baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}${AUTH_SERVICE}/api/member`,
     withCredentials: true
 })
 
 export const AxiosTenants = create({
-    baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}/api/tenant`,
+    baseURL: `${import.meta.env.VITE_AUTH_SERVICE_URL}${AUTH_SERVICE}/api/tenant`,
     withCredentials: true
 })
 
-AxiosAuth.interceptors.response.use(
-  (response) => response,
-  async (err) => {
-    const originalRequest = err.config;
-    if (
-      err.response?.status === 401 &&
-      originalRequest.url !== "/refresh-tokens" &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-     try {
-         await AxiosAuth.get("/refresh-tokens");
-      return AxiosAuth(originalRequest);
-     } catch (refreshError) {
-        return Promise.reject(refreshError)
-     }
 
-    }
+// const CATALOG_SERVICE='/api/catalog'
 
-     return Promise.reject(err);
-  },
-);
+
