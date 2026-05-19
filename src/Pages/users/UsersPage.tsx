@@ -52,7 +52,7 @@ function UsersPage() {
   };
 
   const callMembers = async () => {
-    const response = await api.GetAllMembers(searchName, role);
+    const response = await api.user.GetAllMembers(searchName, role);
     return response.data.list as UserData[];
   };
   const { data = [], error } = useQuery<UserData[], Error>({

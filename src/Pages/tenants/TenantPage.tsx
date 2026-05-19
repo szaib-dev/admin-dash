@@ -14,14 +14,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { GetAllTenants } from "@/http/api";
-
 import { useQuery } from "@tanstack/react-query";
 import { FiSearch } from "react-icons/fi";
 import { Link, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import DialogComponent from "./DialogComponent";
 import DeleteAlertDialog from "./DeleteAlertDialog";
+import api from "@/http/api";
 
 interface Tenant {
   id: string;
@@ -34,7 +33,7 @@ function TenantsPage() {
   const searchName = searchParam.get("searchName") || "";
 
   const callTenants = async () => {
-    const response = await GetAllTenants(searchName);
+    const response = await api.tenant.GetAllTenants(searchName);
     return response.data.list as Tenant[];
   };
   const {

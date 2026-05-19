@@ -4,9 +4,9 @@ import { getZodConstraint, parseWithZod } from "@conform-to/zod/v4";
 import { useMutation } from "@tanstack/react-query";
 import { FiAlertCircle, FiCheck, FiEye, FiEyeOff, FiLoader } from "react-icons/fi";
 import type { CredentialType } from "../../../types";
-import { AuthLogin } from "../../../http/api";
 import { getRequestErrorMessage, loginSchema } from "../../../validation/auth";
 import useMainStore from "../../../store/MainStore";
+import api from "@/http/api";
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -17,7 +17,7 @@ function LoginPage() {
   const {fetchUserItself, user} = useMainStore()
 
   const login = async (data: CredentialType) => {
-    return AuthLogin(data);
+    return api.auth.AuthLogin(data);
   };
   const { mutate, isPending, isSuccess, isError, error, reset, data } =
     useMutation({

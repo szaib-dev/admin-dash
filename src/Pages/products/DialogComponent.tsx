@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import api from "@/http/api";
-import type { UserData } from "@/types";
+import type { TenantData, UserData } from "@/types";
 import { getRequestErrorMessage } from "@/validation/auth";
 import {
   createUserSchema,
@@ -37,12 +37,6 @@ import {
 import { PiStorefront } from "react-icons/pi";
 
 type UserFormErrors = Partial<Record<keyof CreateUserValues, string>>;
-
-interface Tenant {
-  id: string;
-  name: string;
-  address: string;
-}
 
 type UpdateUserValues = Omit<CreateUserValues, "password">;
 
@@ -97,18 +91,18 @@ function DialogComponent({
     }, 900);
   };
 
-  const getTenants = async () => {
-    const response = await api.GetAllTenants();
+  const getProducts = async () => {
+    const response = await api.product.list('string');
     return response.data.list;
   };
 
-  const { data: tenants = [] } = useQuery<Tenant[]>({
-    queryKey: ["tenants"],
-    queryFn: getTenants,
+  const { data: tenants = [] } = useQuery<TenantData[]>({
+    queryKey: ["products"],
+    queryFn: getProducts,
   });
 
   const createUser = useMutation({
-    mutationFn: api.CreateNewMember,
+    mutationFn: api.user.CreateNewMember,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["members"] });
       closeDialogAfterSuccess();
@@ -123,7 +117,7 @@ function DialogComponent({
       id: string;
       data: UserData;
     }) => {
-      return api.UpdateMemberById(id, data);
+      return api.user.UpdateMemberById(id, data);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["members"] });

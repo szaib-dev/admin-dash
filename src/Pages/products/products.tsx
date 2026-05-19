@@ -22,22 +22,16 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { GetAllMembers } from "@/http/api";
 
 import { useQuery } from "@tanstack/react-query";
 import { FiSearch } from "react-icons/fi";
 import { Link, useSearchParams } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
-import type { UserData } from "@/types";
+import type { CategoryData, ProductData, TenantData } from "@/types";
 import DialogComponent from "./DialogComponent";
 import DeleteAlertDialog from "./DeleteAlertDialog";
-
-interface Members {
-  fullname: string;
-  email: string;
-  id: string;
-  role: string;
-}
+import api from "@/http/api";
+import { Switch } from "@/components/ui/switch";
 
 function ProductsPage() {
   const [searchParam, setSearchParam] = useSearchParams();
@@ -45,32 +39,68 @@ function ProductsPage() {
   const productName = searchParam.get("productName") || "";
   const tenantId = searchParam.get("tenantId") || "";
   const categoryId = searchParam.get("categoryId") || "";
+  const isPublished = searchParam.get("isPublished") === "true";
 
-  const updateFilters = (next: {productName?: string, categoryId?: string; tenantId?: string }) => {
-    const params = new URLSearchParams();
+const updateFilters = (next: {
+  productName?: string;
+  categoryId?: string;
+  tenantId?: string;
+  isPublished?: boolean;
+}) => {
+  const nextProductName = next.productName ?? productName;
+  const nextCategoryId = next.categoryId ?? categoryId;
+  const nextTenantId = next.tenantId ?? tenantId;
+  const nextIsPublished = next.isPublished ?? isPublished;
 
-    if (next.categoryId?.trim()) {
-      params.set("categoryId", next.categoryId.trim());
-    }
-    if (next.productName?.trim()) {
-      params.set("productName", next.productName.trim());
-    }
+  const params = new URLSearchParams();
 
-    if (next.tenantId?.trim()) {
-      params.set("tenantId", next.tenantId.trim());
-    }
+  if (nextProductName.trim()) {
+    params.set("productName", nextProductName.trim());
+  }
 
-    setSearchParam(params);
+  if (nextCategoryId.trim()) {
+    params.set("categoryId", nextCategoryId.trim());
+  }
+
+  if (nextTenantId.trim()) {
+    params.set("tenantId", nextTenantId.trim());
+  }
+
+  if (nextIsPublished) {
+    params.set("isPublished", "true");
+  }
+
+  setSearchParam(params);
+};
+
+  const getProducts = async () => {
+    const response = await api.product.list(searchParam);
+    return response.data.list as ProductData[];
   };
 
-  const callMembers = async () => {
-    const response = await GetAllMembers(productName, role);
-    return response.data.list as Members[];
-  };
-  const { data = [], error } = useQuery<Members[], Error>({
-    queryKey: ["members", productName, role],
-    queryFn: callMembers,
+  const getCategories = async()=>{
+    const response = await api.category.list();
+    return response.data.list as CategoryData[]
+  }
+
+  const getTenants = async()=>{
+    const response = await api.tenant.GetAllTenants();
+    return response.data.list as TenantData[]
+  }
+
+  const { data = [], error } = useQuery<ProductData[], Error>({
+    queryKey: ["products", productName, categoryId, tenantId, isPublished],
+    queryFn: getProducts,
   });
+  const {data: tenants} = useQuery<TenantData[]>({
+    queryKey: ['tenants'],
+    queryFn: getTenants
+  })
+
+  const {data: categories} = useQuery<CategoryData[]>({
+    queryKey: ['categories'],
+    queryFn: getCategories
+  })
 
   if (error) {
     return (
@@ -114,12 +144,13 @@ function ProductsPage() {
                 className="size-full border border-gray-300 outline-none px-3 pl-10 rounded-lg bg-white py-2"
               />
             </div>
-
+        
+        {/* Category Filter */}
             <Select
               value={categoryId || "ALL"}
               onValueChange={(value) =>
                 updateFilters({
-                  categoryId: value === "ALL" ? "" : value,
+                  categoryId: value === "ALL" ? "" : value ,
                 })
               }
             >
@@ -131,16 +162,19 @@ function ProductsPage() {
                   <SelectItem className="cursor-pointer" value="ALL">
                     ALL
                   </SelectItem>
-                  <SelectItem className="cursor-pointer" value="MANAGER">
-                    GUN ZOOR
+                     {categories && categories.length > 0 && categories.map(category => {
+                      return (
+                    
+                  <SelectItem key={category._id} className="cursor-pointer" value={category._id}>
+                    {category.name}
                   </SelectItem>
-                  <SelectItem className="cursor-pointer" value="USER">
-                    RESTAR
-                  </SelectItem>
+                 )
+                     })}
                 </SelectGroup>
               </SelectContent>
             </Select>
 
+        {/* Tenant Filter */}
             <Select
               value={tenantId || "ALL"}
               onValueChange={(value) =>
@@ -157,15 +191,23 @@ function ProductsPage() {
                   <SelectItem className="cursor-pointer" value="ALL">
                     ALL
                   </SelectItem>
-                  <SelectItem className="cursor-pointer" value="MANAGER">
-                    Resturant 1
+                 {tenants && tenants.length > 0 && tenants.map(tenant => (
+                  <SelectItem key={tenant.id} className="cursor-pointer" value={tenant.id}>
+                    {tenant.name}
                   </SelectItem>
-                  <SelectItem className="cursor-pointer" value="USER">
-                    Resturant 2
-                  </SelectItem>
+                 ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
+        {/* Switch Button */}
+         <div className="flex items-center  gap-2 border px-3 rounded-sm">
+             <Switch
+               checked={isPublished}
+               onCheckedChange={(checked) => updateFilters({ isPublished: checked })}
+               className="data-[state=checked]:bg-orange-500"
+             />
+              <label className="text-sm">isPublished</label>
+         </div>
           </div>
           <DialogComponent isCreating={true} />
         </div>
@@ -175,30 +217,27 @@ function ProductsPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>UserId</TableHead>
+                  <TableHead>Image</TableHead>
                   <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Edit</TableHead>
+                  <TableHead>Status</TableHead>
                   <TableHead>Delete</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((product: UserData) => {
+                {data.map((product: ProductData) => {
                   return (
-                    <TableRow key={product.id}>
-                      <TableCell>{product.id}</TableCell>
-                      <TableCell>{product.fullname}</TableCell>
-                      <TableCell>{product.email}</TableCell>
-                      <TableCell>{product.role}</TableCell>
-                      <TableCell>
+                    <TableRow key={product._id}>
+                      <TableCell><img src={product.imageUrl} className="size-12 object-cover" /></TableCell>
+                      <TableCell>{product.name}</TableCell>
+                      <TableCell>{product.isPublished ? <span className="py-1 px-1 text-gray-600 bg-green-600/40 text-center uppercase  rounded-sm">Published</span> : <span className="py-1 px-1 text-gray-600 bg-red-600/40  rounded-sm text-center uppercase">UnPublished</span>}</TableCell>
+                      {/* <TableCell>
                         <DialogComponent
                           isCreating={false}
                           UpdateMemberData={product}
                         />
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell>
-                        <DeleteAlertDialog userId={product.id} />
+                        <DeleteAlertDialog productId={product._id} />
                       </TableCell>
                     </TableRow>
                   );

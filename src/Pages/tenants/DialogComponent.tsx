@@ -64,7 +64,7 @@ function TenantDialog({
   };
 
   const createTenant = useMutation({
-    mutationFn: api.CreateTenant,
+    mutationFn: api.tenant.CreateTenant,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["tenants"] });
 
@@ -83,7 +83,7 @@ function TenantDialog({
       id: string;
       data: TenantData;
     }) => {
-      return api.UpdateTenantById(id, data);
+      return api.tenant.UpdateTenantById(id, data);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["tenants"] });

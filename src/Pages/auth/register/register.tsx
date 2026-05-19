@@ -10,8 +10,8 @@ import {
   FiLoader,
 } from "react-icons/fi";
 import type { CredentialType } from "../../../types";
-import { AuthRegister } from "../../../http/api";
 import { getRequestErrorMessage, registerSchema } from "../../../validation/auth";
+import api from "@/http/api";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -22,7 +22,7 @@ function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   const register = async (data: CredentialType) => {
-    return AuthRegister(data);
+    return api.auth.AuthRegister(data);
   };
   const { mutate, data, isPending, isSuccess, isError, error, reset } =
     useMutation({

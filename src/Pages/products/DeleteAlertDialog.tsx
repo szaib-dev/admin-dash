@@ -14,11 +14,11 @@ import api from "@/http/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-function DeleteAlertDialog(props: { userId: string }) {
-  const userId = props.userId;
+function DeleteAlertDialog(props: { productId: string }) {
+  const productId = props.productId;
 
   const deleteUser = async () => {
-    return await api.DeleteMemberById(userId);
+    return await api.product.delete(productId);
   };
    const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
@@ -26,7 +26,7 @@ function DeleteAlertDialog(props: { userId: string }) {
     mutationFn: deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["members"],
+        queryKey: ["products"],
       });
        setOpen(false);
     },

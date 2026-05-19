@@ -10,7 +10,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { DeleteTenantById } from "@/http/api";
+import api from "@/http/api";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -18,7 +18,7 @@ function DeleteAlertDialog(props: { tenantId: string }) {
   const tenantId = props.tenantId;
 
   const deleteUser = async () => {
-    return await DeleteTenantById(tenantId);
+    return await api.tenant.DeleteTenantById(tenantId);
   };
    const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();

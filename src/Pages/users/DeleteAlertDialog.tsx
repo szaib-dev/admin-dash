@@ -18,7 +18,7 @@ function DeleteAlertDialog(props: { userId: string }) {
   const userId = props.userId;
 
   const deleteUser = async () => {
-    return await api.DeleteMemberById(userId);
+    return await api.user.DeleteMemberById(userId);
   };
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();

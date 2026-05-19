@@ -23,3 +23,20 @@ export interface  UserData {
   email: string,
   role: "MANAGER" | "USER"
   tenant?: TenantData }
+
+
+  export interface ProductData {
+  _id: string
+  name: string
+  description: string
+  isPublished: boolean
+  imageUrl: string
+  tenantId: string
+  categoryId: string
+  __v: number
+}
+
+export interface CategoryData {
+  _id: string;
+  name: string;
+}

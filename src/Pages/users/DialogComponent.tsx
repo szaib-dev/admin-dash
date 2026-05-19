@@ -98,7 +98,7 @@ function DialogComponent({
   };
 
   const getTenants = async () => {
-    const response = await api.GetAllTenants();
+    const response = await api.tenant.GetAllTenants();
     return response.data.list;
   };
 
@@ -108,7 +108,7 @@ function DialogComponent({
   });
 
   const createUser = useMutation({
-    mutationFn: api.CreateNewMember,
+    mutationFn: api.user.CreateNewMember,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["members"] });
       closeDialogAfterSuccess();
@@ -123,7 +123,7 @@ function DialogComponent({
       id: string;
       data: UpdateUserValues;
     }) => {
-      return api.UpdateMemberById(id, data);
+      return api.user.UpdateMemberById(id, data);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["members"] });
