@@ -9,7 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { CreateTenant, UpdateTenantById } from "@/http/api";
+import api from "@/http/api";
+import type { TenantData } from "@/types";
 import { getRequestErrorMessage } from "@/validation/auth";
 import {
   createTenantSchema,
@@ -27,12 +28,6 @@ import {
 import { PiStorefront } from "react-icons/pi";
 
 type TenantFormErrors = Partial<Record<keyof CreateTenantValues, string>>;
-
-type TenantData = {
-  id: string;
-  name: string;
-  address: string;
-};
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -69,7 +64,7 @@ function TenantDialog({
   };
 
   const createTenant = useMutation({
-    mutationFn: CreateTenant,
+    mutationFn: api.CreateTenant,
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["tenants"] });
 
@@ -86,9 +81,9 @@ function TenantDialog({
       data,
     }: {
       id: string;
-      data: CreateTenantValues;
+      data: TenantData;
     }) => {
-      return UpdateTenantById(id, data);
+      return api.UpdateTenantById(id, data);
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["tenants"] });

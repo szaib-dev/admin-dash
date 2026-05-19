@@ -13,12 +13,12 @@ export const UserRole = {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole];
 
 export interface TenantData {
-  id : string,
+  id?: string,
   name: string,
   address: string
 }
 export interface  UserData {
-  id: string
+  id?: string
   fullname: string
   email: string,
   role: "MANAGER" | "USER"

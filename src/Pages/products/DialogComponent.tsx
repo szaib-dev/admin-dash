@@ -121,7 +121,7 @@ function DialogComponent({
       data,
     }: {
       id: string;
-      data: UpdateUserValues;
+      data: UserData;
     }) => {
       return api.UpdateMemberById(id, data);
     },

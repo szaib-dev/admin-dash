@@ -20,7 +20,7 @@ function DeleteAlertDialog(props: { userId: string }) {
   const deleteUser = async () => {
     return await api.DeleteMemberById(userId);
   };
-  const [open, setOpen] = useState(false);
+   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { mutate, error, isSuccess, isPending } = useMutation({
     mutationFn: deleteUser,
@@ -28,7 +28,7 @@ function DeleteAlertDialog(props: { userId: string }) {
       queryClient.invalidateQueries({
         queryKey: ["members"],
       });
-      setOpen(false);
+       setOpen(false);
     },
   });
 
@@ -36,11 +36,7 @@ function DeleteAlertDialog(props: { userId: string }) {
     <div>
       <AlertDialog open={open} onOpenChange={(open) => isSuccess && !open}>
         <AlertDialogTrigger asChild>
-          <Button
-            onClick={() => setOpen(true)}
-            variant="destructive"
-            className="cursor-pointer"
-          >
+          <Button onClick={ ()=> setOpen(true) } variant="destructive" className="cursor-pointer">
             Delete
           </Button>
         </AlertDialogTrigger>
@@ -54,13 +50,7 @@ function DeleteAlertDialog(props: { userId: string }) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              onClick={() => setOpen(false)}
-              disabled={isPending}
-            >
-              {" "}
-              Cancel{" "}
-            </AlertDialogCancel>
+            <AlertDialogCancel onClick={()=> setOpen(false)} disabled={isPending} > Cancel </AlertDialogCancel>
             <AlertDialogAction
               onClick={(event) => {
                 event.preventDefault();

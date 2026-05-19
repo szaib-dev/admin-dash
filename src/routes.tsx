@@ -7,6 +7,7 @@ import HomeLayout from "./pages/home/layout";
 import RootLayout from "./pages/layout";
 import UsersPage from "./pages/users/UsersPage";
 import TenantsPage from "./pages/tenants/TenantPage";
+import ProductsPage from "./pages/products/products";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
           {
             path: "/",
             element: <Homepage />,
+          },
+          {
+            path: '/products',
+            element: <ProductsPage />
           },
           {
             path: '/users',

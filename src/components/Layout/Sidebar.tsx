@@ -3,6 +3,7 @@ import useMainStore from "@/store/MainStore";
 import { FiHome, FiLogOut, FiSettings, FiUsers } from "react-icons/fi";
 import { PiStorefront } from "react-icons/pi";
 import { NavLink } from "react-router-dom";
+import { AiOutlineProduct } from "react-icons/ai";
 
 function Sidebar() {
   const { user, logoutUserItself } = useMainStore();
@@ -22,6 +23,11 @@ function Sidebar() {
       title: "Restaurants",
       url: "/resturants",
       icon: PiStorefront,
+    },
+    {
+      title: "Products",
+      url: "/products",
+      icon: AiOutlineProduct ,
     },
     {
       title: "Settings",
